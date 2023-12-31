@@ -1,95 +1,79 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import React, { useState } from "react";
+import Header from "./Components/Header";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+const page = () => {
+  const [title, settitle] = useState("");
+  const [Desc, setDesc] = useState("");
+  const [mainTask, setmainTask] = useState([]);
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setmainTask([...mainTask, { title, Desc }]);
+    console.log(title);
+    console.log(Desc);
+    console.log(mainTask);
+    settitle("");
+    setDesc("");
+  };
+  let renderTask = <h2>No Task Available</h2>;
+
+  const deletehandler = (i) => {
+    let copytask = [...mainTask];
+    copytask.splice(i, 1);
+    setmainTask(copytask);
+  };
+
+  if (mainTask.length > 0) {
+    renderTask = mainTask.map((e, i) => {
+      return (
+        <li key={i}>
+          <div>
+            <h3 class="hh">{e.title}</h3>
+            <h4>{e.Desc}</h4>
+          </div>
+          <button
+            class="delete-button"
+            onClick={() => {
+              deletehandler(i);
+            }}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+            Delete
+          </button>
+        </li>
+      );
+    });
+  }
+  return (
+    <>
+      <Header />
+      <form className="form" onSubmit={submitHandler}>
+        <input
+          type="text"
+          className="form-text"
+          placeholder="Enter title"
+          required
+          value={title}
+          onChange={(e) => {
+            settitle(e.target.value);
+          }}
         />
+        <input
+          type="text"
+          className="form-text"
+          placeholder="Enter Description"
+          required
+          value={Desc}
+          onChange={(e) => {
+            setDesc(e.target.value);
+          }}
+        />
+        <input className="form-submit" type="submit" value="Add Task"></input>
+      </form>
+      <div className="task-container">
+        <ul>{renderTask}</ul>
       </div>
+    </>
+  );
+};
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default page;
